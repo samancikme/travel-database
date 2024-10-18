@@ -49,7 +49,10 @@ function getOffers() {
 
 // JSON faylga post ma'lumotlarini yozish
 function savePosts(destinations) {
-  fs.writeFileSync("./destinations.json", JSON.stringify({ destinations }, null, 2));
+  fs.writeFileSync(
+    "./destinations.json",
+    JSON.stringify({ destinations }, null, 2)
+  );
 }
 
 // Helper function to create a slug from title
@@ -80,7 +83,9 @@ app.post("/register", (req, res) => {
   users.push(newUser);
   saveUsers(users);
 
-  res.status(201).json({ message: "Foydalanuvchi muvaffaqiyatli ro'yxatdan o'tdi" });
+  res
+    .status(201)
+    .json({ message: "Foydalanuvchi muvaffaqiyatli ro'yxatdan o'tdi" });
 });
 
 // Login endpoint (foydalanuvchilarni autentifikatsiya qilish)
@@ -131,9 +136,9 @@ app.get("/offers", (req, res) => {
 
 // Protected route: Create destination (autentifikatsiyadan o'tgan foydalanuvchilar uchun)
 app.post("/destinations", authenticateToken, (req, res) => {
-  const { title, content, image, excerpt } = req.body;
+  const { name, country, image, description } = req.body;
   const destinations = getDestinations();
-  const slug = createSlug(title);
+  const slug = createSlug(name);
   const today = new Date();
   const formattedDate = today
     .toLocaleDateString("en-GB")
@@ -143,11 +148,11 @@ app.post("/destinations", authenticateToken, (req, res) => {
 
   const newDestination = {
     id: destinations.length + 1,
-    title,
+    name,
     slug,
-    content,
+    country,
     image,
-    excerpt,
+    description,
     authorId: req.user.id,
     createdAt: formattedDate,
   };
@@ -155,35 +160,46 @@ app.post("/destinations", authenticateToken, (req, res) => {
   destinations.push(newDestination);
   savePosts(destinations);
 
-  res.status(201).json({ message: "Destination muvaffaqiyatli yaratildi", destination: newDestination });
+  res.status(201).json({
+    message: "Destination muvaffaqiyatli yaratildi",
+    destination: newDestination,
+  });
 });
 
 // Protected route: Update destination
 app.put("/destinations/:id", authenticateToken, (req, res) => {
   let destinations = getDestinations();
+  const slug = createSlug(name);
   const destinationId = parseInt(req.params.id);
-  const { title, content, image, excerpt } = req.body;
+  const { name, country, image, description } = req.body;
 
   const destinationIndex = destinations.findIndex(
-    (destination) => destination.id === destinationId && destination.authorId === req.user.id
+    (destination) =>
+      destination.id === destinationId && destination.authorId === req.user.id
   );
 
   if (destinationIndex === -1) {
-    return res.status(404).json({ message: "Destination topilmadi yoki sizning emas" });
+    return res
+      .status(404)
+      .json({ message: "Destination topilmadi yoki sizning emas" });
   }
 
   const updatedDestination = {
     ...destinations[destinationIndex],
-    title,
-    content,
+    name,
+    slug,
+    country,
     image,
-    excerpt,
+    description,
   };
 
   destinations[destinationIndex] = updatedDestination;
   savePosts(destinations);
 
-  res.status(200).json({ message: "Destination muvaffaqiyatli yangilandi", destination: updatedDestination });
+  res.status(200).json({
+    message: "Destination muvaffaqiyatli yangilandi",
+    destination: updatedDestination,
+  });
 });
 
 // Protected route: Delete destination
@@ -192,11 +208,14 @@ app.delete("/destinations/:id", authenticateToken, (req, res) => {
   const destinationId = parseInt(req.params.id);
 
   const destinationIndex = destinations.findIndex(
-    (destination) => destination.id === destinationId && destination.authorId === req.user.id
+    (destination) =>
+      destination.id === destinationId && destination.authorId === req.user.id
   );
 
   if (destinationIndex === -1) {
-    return res.status(404).json({ message: "Destination topilmadi yoki sizning emas" });
+    return res
+      .status(404)
+      .json({ message: "Destination topilmadi yoki sizning emas" });
   }
 
   destinations.splice(destinationIndex, 1);
@@ -207,7 +226,7 @@ app.delete("/destinations/:id", authenticateToken, (req, res) => {
 
 // Protected route: Create offer (autentifikatsiyadan o'tgan foydalanuvchilar uchun)
 app.post("/offers", authenticateToken, (req, res) => {
-  const { title, content, image, excerpt } = req.body;
+  const { title, details, image, rating, price } = req.body;
   const offers = getOffers();
   const slug = createSlug(title);
   const today = new Date();
@@ -221,45 +240,54 @@ app.post("/offers", authenticateToken, (req, res) => {
     id: offers.length + 1,
     title,
     slug,
-    content,
+    details,
     image,
-    excerpt,
-    authorId: req.user.id,
+    rating,
+    price,
+    CreatedUserId: req.user.id,
     createdAt: formattedDate,
   };
 
   offers.push(newOffer);
   savePosts(offers);
 
-  res.status(201).json({ message: "Offer muvaffaqiyatli yaratildi", offer: newOffer });
+  res
+    .status(201)
+    .json({ message: "Offer muvaffaqiyatli yaratildi", offer: newOffer });
 });
 
 // Protected route: Update offer
 app.put("/offers/:id", authenticateToken, (req, res) => {
   let offers = getOffers();
   const offerId = parseInt(req.params.id);
-  const { title, content, image, excerpt } = req.body;
-
+  const { title, details, image, rating, price } = req.body;
+  const slug = createSlug(title);
   const offerIndex = offers.findIndex(
     (offer) => offer.id === offerId && offer.authorId === req.user.id
   );
 
   if (offerIndex === -1) {
-    return res.status(404).json({ message: "Offer topilmadi yoki sizning emas" });
+    return res
+      .status(404)
+      .json({ message: "Offer topilmadi yoki sizning emas" });
   }
 
   const updatedOffer = {
     ...offers[offerIndex],
     title,
-    content,
+    slug,
+    details,
     image,
-    excerpt,
+    rating,
+    price,
   };
 
   offers[offerIndex] = updatedOffer;
   savePosts(offers);
 
-  res.status(200).json({ message: "Offer muvaffaqiyatli yangilandi", offer: updatedOffer });
+  res
+    .status(200)
+    .json({ message: "Offer muvaffaqiyatli yangilandi", offer: updatedOffer });
 });
 
 // Protected route: Delete offer
@@ -272,7 +300,9 @@ app.delete("/offers/:id", authenticateToken, (req, res) => {
   );
 
   if (offerIndex === -1) {
-    return res.status(404).json({ message: "Offer topilmadi yoki sizning emas" });
+    return res
+      .status(404)
+      .json({ message: "Offer topilmadi yoki sizning emas" });
   }
 
   offers.splice(offerIndex, 1);
