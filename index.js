@@ -166,12 +166,13 @@ app.post("/destinations", authenticateToken, (req, res) => {
   });
 });
 
+
 // Protected route: Update destination
 app.put("/destinations/:id", authenticateToken, (req, res) => {
   let destinations = getDestinations();
   const slug = createSlug(name);
   const destinationId = parseInt(req.params.id);
-  const { name, country, image, description } = req.body;
+  const { name, country, image, description , } = req.body;
 
   const destinationIndex = destinations.findIndex(
     (destination) =>
@@ -224,9 +225,12 @@ app.delete("/destinations/:id", authenticateToken, (req, res) => {
   res.status(200).json({ message: "Destination muvaffaqiyatli o'chirildi" });
 });
 
+
+
+
 // Protected route: Create offer (autentifikatsiyadan o'tgan foydalanuvchilar uchun)
 app.post("/offers", authenticateToken, (req, res) => {
-  const { title, details, image, rating, price } = req.body;
+  const { title, details, image, rating, price , destinationId} = req.body;
   const offers = getOffers();
   const slug = createSlug(title);
   const today = new Date();
@@ -244,6 +248,7 @@ app.post("/offers", authenticateToken, (req, res) => {
     image,
     rating,
     price,
+    destinationId,
     CreatedUserId: req.user.id,
     createdAt: formattedDate,
   };
