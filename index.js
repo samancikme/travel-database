@@ -93,6 +93,11 @@ app.post("/register", (req, res) => {
     .json({ message: "Foydalanuvchi muvaffaqiyatli ro'yxatdan o'tdi" });
 });
 
+
+
+
+
+
 // Login endpoint (foydalanuvchilarni autentifikatsiya qilish)
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
@@ -242,7 +247,7 @@ app.post("/offers", authenticateToken, (req, res) => {
     .join("-");
 
   const newOffer = {
-    id: offers.length + 1,
+    id: destinationId*100+1,
     title,
     slug,
     details,
