@@ -25,7 +25,7 @@ function saveUsers(users) {
   fs.writeFileSync("./users.json", JSON.stringify({ users }, null, 2));
 }
 
-// JSON fayldan post ma'lumotlarini olish
+// JSON fayldan destination ma'lumotlarini olish
 function getDestinations() {
   try {
     const data = fs.readFileSync("./destinations.json");
@@ -36,7 +36,7 @@ function getDestinations() {
   }
 }
 
-// JSON fayldan offers ma'lumotlarini olish
+// JSON fayldan offer ma'lumotlarini olish
 function getOffers() {
   try {
     const data = fs.readFileSync("./offers.json");
@@ -47,12 +47,17 @@ function getOffers() {
   }
 }
 
-// JSON faylga post ma'lumotlarini yozish
-function savePosts(destinations) {
+// JSON faylga destination ma'lumotlarini yozish
+function saveDestinations(destinations) {
   fs.writeFileSync(
     "./destinations.json",
     JSON.stringify({ destinations }, null, 2)
   );
+}
+
+// JSON faylga offer ma'lumotlarini yozish
+function saveOffers(offers) {
+  fs.writeFileSync("./offers.json", JSON.stringify({ offers }, null, 2));
 }
 
 // Helper function to create a slug from title
@@ -158,7 +163,7 @@ app.post("/destinations", authenticateToken, (req, res) => {
   };
 
   destinations.push(newDestination);
-  savePosts(destinations);
+  saveDestinations(destinations);
 
   res.status(201).json({
     message: "Destination muvaffaqiyatli yaratildi",
@@ -166,13 +171,12 @@ app.post("/destinations", authenticateToken, (req, res) => {
   });
 });
 
-
 // Protected route: Update destination
 app.put("/destinations/:id", authenticateToken, (req, res) => {
   let destinations = getDestinations();
-  const slug = createSlug(name);
   const destinationId = parseInt(req.params.id);
-  const { name, country, image, description , } = req.body;
+  const { name, country, image, description } = req.body;
+  const slug = createSlug(name);
 
   const destinationIndex = destinations.findIndex(
     (destination) =>
@@ -195,7 +199,7 @@ app.put("/destinations/:id", authenticateToken, (req, res) => {
   };
 
   destinations[destinationIndex] = updatedDestination;
-  savePosts(destinations);
+  saveDestinations(destinations);
 
   res.status(200).json({
     message: "Destination muvaffaqiyatli yangilandi",
@@ -220,17 +224,14 @@ app.delete("/destinations/:id", authenticateToken, (req, res) => {
   }
 
   destinations.splice(destinationIndex, 1);
-  savePosts(destinations);
+  saveDestinations(destinations);
 
   res.status(200).json({ message: "Destination muvaffaqiyatli o'chirildi" });
 });
 
-
-
-
 // Protected route: Create offer (autentifikatsiyadan o'tgan foydalanuvchilar uchun)
 app.post("/offers", authenticateToken, (req, res) => {
-  const { title, details, image, rating, price , destinationId} = req.body;
+  const { title, details, image, rating, price, destinationId } = req.body;
   const offers = getOffers();
   const slug = createSlug(title);
   const today = new Date();
@@ -254,7 +255,7 @@ app.post("/offers", authenticateToken, (req, res) => {
   };
 
   offers.push(newOffer);
-  savePosts(offers);
+  saveOffers(offers);
 
   res
     .status(201)
@@ -267,8 +268,9 @@ app.put("/offers/:id", authenticateToken, (req, res) => {
   const offerId = parseInt(req.params.id);
   const { title, details, image, rating, price } = req.body;
   const slug = createSlug(title);
+
   const offerIndex = offers.findIndex(
-    (offer) => offer.id === offerId && offer.authorId === req.user.id
+    (offer) => offer.id === offerId && offer.CreatedUserId === req.user.id
   );
 
   if (offerIndex === -1) {
@@ -288,7 +290,7 @@ app.put("/offers/:id", authenticateToken, (req, res) => {
   };
 
   offers[offerIndex] = updatedOffer;
-  savePosts(offers);
+  saveOffers(offers);
 
   res
     .status(200)
@@ -301,7 +303,7 @@ app.delete("/offers/:id", authenticateToken, (req, res) => {
   const offerId = parseInt(req.params.id);
 
   const offerIndex = offers.findIndex(
-    (offer) => offer.id === offerId && offer.authorId === req.user.id
+    (offer) => offer.id === offerId && offer.CreatedUserId === req.user.id
   );
 
   if (offerIndex === -1) {
@@ -311,11 +313,12 @@ app.delete("/offers/:id", authenticateToken, (req, res) => {
   }
 
   offers.splice(offerIndex, 1);
-  savePosts(offers);
+  saveOffers(offers);
 
   res.status(200).json({ message: "Offer muvaffaqiyatli o'chirildi" });
 });
 
+// Serverni ishga tushirish
 app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+  console.log(`Server ${port}-portda ishga tushdi`);
 });
