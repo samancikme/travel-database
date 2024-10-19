@@ -1,46 +1,44 @@
 {
-    "destinations" : [
-        [
-            {
-                "id": 1,
-                "name": "Paris",
-                "country": "France",
-                "description": "The city of lights and love.",
-                "image": "https://i.postimg.cc/WzjqGwtm/paris-2.jpg",
-                "slug": "paris"
-            },
-            {
-                "id": 2,
-                "name": "Tokyo",
-                "country": "Japan",
-                "description": "A bustling metropolis with a mix of traditional and modern culture.",
-                "image": "https://i.postimg.cc/FK8jLSjG/Tokyo-1.webp",
-                "slug": "tokyo"
-            },
-            {
-                "id": 3,
-                "name": "New York",
-                "country": "USA",
-                "description": "The city that never sleeps, known for its skyline and cultural diversity.",
-                "image": "https://i.postimg.cc/BZdV08kT/Statue-of-Liberty-Tour-6.jpg",
-                "slug": "new-york"
-            },
-            {
-                "id": 4,
-                "name": "Sydney",
-                "country": "Australia",
-                "description": "Known for its stunning harbor and Opera House.",
-                "image": "https://i.postimg.cc/j2G93C0h/Sydney-3.jpg",
-                "slug": "sydney"
-            },
-            {
-                "id": 5,
-                "name": "Rome",
-                "country": "Italy",
-                "description": "The Eternal City, rich in history and culture.",
-                "image": "https://i.postimg.cc/8k6VMVVb/Rome-1.jpg",
-                "slug": "rome"
-            }
-        ]
+    "destinations": [
+        {
+            "id": 1,
+            "name": "Paris",
+            "country": "France",
+            "description": "The city of lights and love.",
+            "image": "https://i.postimg.cc/WzjqGwtm/paris-2.jpg",
+            "slug": "paris"
+        },
+        {
+            "id": 2,
+            "name": "Tokyo",
+            "country": "Japan",
+            "description": "A bustling metropolis with a mix of traditional and modern culture.",
+            "image": "https://i.postimg.cc/FK8jLSjG/Tokyo-1.webp",
+            "slug": "tokyo"
+        },
+        {
+            "id": 3,
+            "name": "New York",
+            "country": "USA",
+            "description": "The city that never sleeps, known for its skyline and cultural diversity.",
+            "image": "https://i.postimg.cc/BZdV08kT/Statue-of-Liberty-Tour-6.jpg",
+            "slug": "new-york"
+        },
+        {
+            "id": 4,
+            "name": "Sydney",
+            "country": "Australia",
+            "description": "Known for its stunning harbor and Opera House.",
+            "image": "https://i.postimg.cc/j2G93C0h/Sydney-3.jpg",
+            "slug": "sydney"
+        },
+        {
+            "id": 5,
+            "name": "Rome",
+            "country": "Italy",
+            "description": "The Eternal City, rich in history and culture.",
+            "image": "https://i.postimg.cc/8k6VMVVb/Rome-1.jpg",
+            "slug": "rome"
+        }
     ]
 }
