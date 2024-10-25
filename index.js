@@ -206,7 +206,7 @@ app.get("/destinations", (req, res) => {
   const localizedDestinations = destinations.map(destination => {
     return {
       ...destination,
-      name: translate(destination.name, lang) 
+      name: destination.name[lang] 
     };
   });
 
@@ -234,11 +234,10 @@ app.get("/destinations", (req, res) => {
 app.get("/offers", (req, res) => {
   const lang = req.query.lang || 'en';
   const offers = getOffers();
-
   const localizedOffers = offers.map(offer => {
     return {
       ...offer,
-      title: translate(offer.title, lang) 
+      title: offer.title[lang]
     };
   });
 
