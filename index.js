@@ -1,3 +1,4 @@
+// File: server.js
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -31,7 +32,7 @@ function getDestinations() {
     const data = fs.readFileSync("./destinations.json");
     return JSON.parse(data).destinations;
   } catch (error) {
-    console.error("Error reading destination.json", error);
+    console.error("Error reading destinations.json", error);
     return [];
   }
 }
@@ -68,7 +69,30 @@ function createSlug(title) {
     .replace(/[^a-z0-9\-]/g, "");
 }
 
-// Register endpoint (foydalanuvchilarni 'users.json'ga saqlash)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 app.post("/register", (req, res) => {
   const { username, email, password } = req.body;
   const users = getUsers();
@@ -98,7 +122,18 @@ app.post("/register", (req, res) => {
 
 
 
-// Login endpoint (foydalanuvchilarni autentifikatsiya qilish)
+
+
+
+
+
+
+
+
+
+
+
+
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
   const users = getUsers();
@@ -116,11 +151,28 @@ app.post("/login", (req, res) => {
   const token = jwt.sign({ id: user.id, email: user.email }, SECRET_KEY, {
     expiresIn: "1h",
   });
-
   res.status(200).json({ message: "Kirish muvaffaqiyatli", token });
 });
 
-// Middleware for protected routes (only for authenticated users)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function authenticateToken(req, res, next) {
   const token = req.headers["authorization"];
   if (!token) return res.sendStatus(401);
@@ -132,29 +184,99 @@ function authenticateToken(req, res, next) {
   });
 }
 
-// Public route: Get destinations (registratsiya talab qilinmaydi)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 app.get("/destinations", (req, res) => {
+  const lang = req.query.lang || 'en'; 
   const destinations = getDestinations();
-  res.json(destinations);
+
+  const localizedDestinations = destinations.map(destination => {
+    return {
+      ...destination,
+      name: translate(destination.name, lang) 
+    };
+  });
+
+  res.json(localizedDestinations);
 });
 
-// Public route: Get offers (registratsiya talab qilinmaydi)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 app.get("/offers", (req, res) => {
+  const lang = req.query.lang || 'en';
   const offers = getOffers();
-  res.json(offers);
+
+  const localizedOffers = offers.map(offer => {
+    return {
+      ...offer,
+      title: translate(offer.title, lang) 
+    };
+  });
+
+  res.json(localizedOffers);
 });
 
-// Protected route: Create destination (autentifikatsiyadan o'tgan foydalanuvchilar uchun)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 app.post("/destinations", authenticateToken, (req, res) => {
   const { name, country, image, description } = req.body;
   const destinations = getDestinations();
   const slug = createSlug(name);
   const today = new Date();
-  const formattedDate = today
-    .toLocaleDateString("en-GB")
-    .split("/")
-    .reverse()
-    .join("-");
+  const formattedDate = today.toISOString().split("T")[0];
 
   const newDestination = {
     id: destinations.length + 1,
@@ -170,13 +292,39 @@ app.post("/destinations", authenticateToken, (req, res) => {
   destinations.push(newDestination);
   saveDestinations(destinations);
 
-  res.status(201).json({
-    message: "Destination muvaffaqiyatli yaratildi",
-    destination: newDestination,
-  });
+  res
+    .status(201)
+    .json({
+      message: "Destination muvaffaqiyatli yaratildi",
+      destination: newDestination,
+    });
 });
 
-// Protected route: Update destination
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 app.put("/destinations/:id", authenticateToken, (req, res) => {
   let destinations = getDestinations();
   const destinationId = parseInt(req.params.id);
@@ -206,13 +354,42 @@ app.put("/destinations/:id", authenticateToken, (req, res) => {
   destinations[destinationIndex] = updatedDestination;
   saveDestinations(destinations);
 
-  res.status(200).json({
-    message: "Destination muvaffaqiyatli yangilandi",
-    destination: updatedDestination,
-  });
+  res
+    .status(200)
+    .json({
+      message: "Destination muvaffaqiyatli yangilandi",
+      destination: updatedDestination,
+    });
 });
 
-// Protected route: Delete destination
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 app.delete("/destinations/:id", authenticateToken, (req, res) => {
   let destinations = getDestinations();
   const destinationId = parseInt(req.params.id);
@@ -234,20 +411,31 @@ app.delete("/destinations/:id", authenticateToken, (req, res) => {
   res.status(200).json({ message: "Destination muvaffaqiyatli o'chirildi" });
 });
 
-// Protected route: Create offer (autentifikatsiyadan o'tgan foydalanuvchilar uchun)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 app.post("/offers", authenticateToken, (req, res) => {
   const { title, details, image, rating, price, destinationId } = req.body;
   const offers = getOffers();
   const slug = createSlug(title);
   const today = new Date();
-  const formattedDate = today
-    .toLocaleDateString("en-GB")
-    .split("/")
-    .reverse()
-    .join("-");
+  const formattedDate = today.toISOString().split("T")[0];
 
   const newOffer = {
-    id: destinationId*100+1,
+    id: offers.length + 1,
     title,
     slug,
     details,
@@ -267,7 +455,21 @@ app.post("/offers", authenticateToken, (req, res) => {
     .json({ message: "Offer muvaffaqiyatli yaratildi", offer: newOffer });
 });
 
-// Protected route: Update offer
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 app.put("/offers/:id", authenticateToken, (req, res) => {
   let offers = getOffers();
   const offerId = parseInt(req.params.id);
@@ -302,7 +504,23 @@ app.put("/offers/:id", authenticateToken, (req, res) => {
     .json({ message: "Offer muvaffaqiyatli yangilandi", offer: updatedOffer });
 });
 
-// Protected route: Delete offer
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 app.delete("/offers/:id", authenticateToken, (req, res) => {
   let offers = getOffers();
   const offerId = parseInt(req.params.id);
@@ -323,7 +541,18 @@ app.delete("/offers/:id", authenticateToken, (req, res) => {
   res.status(200).json({ message: "Offer muvaffaqiyatli o'chirildi" });
 });
 
-// Serverni ishga tushirish
+
+
+
+
+
+
+
+
+
+
+
+
 app.listen(port, () => {
   console.log(`Server ${port}-portda ishga tushdi`);
 });

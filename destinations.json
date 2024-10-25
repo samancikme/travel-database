@@ -4,7 +4,11 @@
             "id": 1,
             "name": "Paris",
             "country": "France",
-            "description": "The city of lights and love.",
+            "description": {
+                "en": "The city of lights and love.",
+                "ru": "Город света и любви.",
+                "uz": "Nur va muhabbat shahri."
+            },
             "image": "https://i.postimg.cc/WzjqGwtm/paris-2.jpg",
             "slug": "paris"
         },
@@ -12,7 +16,11 @@
             "id": 2,
             "name": "Tokyo",
             "country": "Japan",
-            "description": "A bustling metropolis with a mix of traditional and modern culture.",
+            "description": {
+                "en": "A bustling metropolis with a mix of traditional and modern culture.",
+                "ru": "Шумный мегаполис с сочетанием традиционной и современной культуры.",
+                "uz": "An'anaviy va zamonaviy madaniyat uyg‘unlashgan gavjum metropol."
+            },
             "image": "https://i.postimg.cc/FK8jLSjG/Tokyo-1.webp",
             "slug": "tokyo"
         },
@@ -20,7 +28,11 @@
             "id": 3,
             "name": "New York",
             "country": "USA",
-            "description": "The city that never sleeps, known for its skyline and cultural diversity.",
+            "description": {
+                "en": "The city that never sleeps, known for its skyline and cultural diversity.",
+                "ru": "Город, который никогда не спит, известный своим горизонтом и культурным многообразием.",
+                "uz": "Hech qachon uxlamaydigan, osmon chizig‘i va madaniy xilma-xilligi bilan mashhur shahar."
+            },
             "image": "https://i.postimg.cc/BZdV08kT/Statue-of-Liberty-Tour-6.jpg",
             "slug": "new-york"
         },
@@ -28,7 +40,11 @@
             "id": 4,
             "name": "Sydney",
             "country": "Australia",
-            "description": "Known for its stunning harbor and Opera House.",
+            "description": {
+                "en": "Known for its stunning harbor and Opera House.",
+                "ru": "Известен своим потрясающим заливом и оперным театром.",
+                "uz": "Ajoyib bandargohi va Opera uyi bilan mashhur."
+            },
             "image": "https://i.postimg.cc/j2G93C0h/Sydney-3.jpg",
             "slug": "sydney"
         },
@@ -36,7 +52,11 @@
             "id": 5,
             "name": "Rome",
             "country": "Italy",
-            "description": "The Eternal City, rich in history and culture.",
+            "description": {
+                "en": "The Eternal City, rich in history and culture.",
+                "ru": "Вечный город, богатый историей и культурой.",
+                "uz": "Tarix va madaniyatga boy abadiy shahar."
+            },
             "image": "https://i.postimg.cc/8k6VMVVb/Rome-1.jpg",
             "slug": "rome"
         }
