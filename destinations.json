@@ -2,8 +2,16 @@
     "destinations": [
         {
             "id": 1,
-            "name": "Paris",
-            "country": "France",
+            "name": {
+                "en": "Paris",
+                "ru": "Париж",
+                "uz": "Parij"
+            },
+            "country": {
+                "en": "France",
+                "ru": "Франция",
+                "uz": "Fransiya"
+            },
             "description": {
                 "en": "The city of lights and love.",
                 "ru": "Город света и любви.",
@@ -14,8 +22,16 @@
         },
         {
             "id": 2,
-            "name": "Tokyo",
-            "country": "Japan",
+            "name": {
+                "en": "Tokyo",
+                "ru": "Токио",
+                "uz": "Tokio"
+            },
+            "country": {
+                "en": "Japan",
+                "ru": "Япония",
+                "uz": "Yaponiya"
+            },
             "description": {
                 "en": "A bustling metropolis with a mix of traditional and modern culture.",
                 "ru": "Шумный мегаполис с сочетанием традиционной и современной культуры.",
@@ -26,8 +42,16 @@
         },
         {
             "id": 3,
-            "name": "New York",
-            "country": "USA",
+            "name": {
+                "en": "New York",
+                "ru": "Нью-Йорк",
+                "uz": "Nyu-York"
+            },
+            "country": {
+                "en": "USA",
+                "ru": "США",
+                "uz": "AQSh"
+            },
             "description": {
                 "en": "The city that never sleeps, known for its skyline and cultural diversity.",
                 "ru": "Город, который никогда не спит, известный своим горизонтом и культурным многообразием.",
@@ -38,8 +62,16 @@
         },
         {
             "id": 4,
-            "name": "Sydney",
-            "country": "Australia",
+            "name": {
+                "en": "Sydney",
+                "ru": "Сидней",
+                "uz": "Sidney"
+            },
+            "country": {
+                "en": "Australia",
+                "ru": "Австралия",
+                "uz": "Avstraliya"
+            },
             "description": {
                 "en": "Known for its stunning harbor and Opera House.",
                 "ru": "Известен своим потрясающим заливом и оперным театром.",
@@ -50,8 +82,16 @@
         },
         {
             "id": 5,
-            "name": "Rome",
-            "country": "Italy",
+            "name": {
+                "en": "Rome",
+                "ru": "Рим",
+                "uz": "Rim"
+            },
+            "country": {
+                "en": "Italy",
+                "ru": "Италия",
+                "uz": "Italiya"
+            },
             "description": {
                 "en": "The Eternal City, rich in history and culture.",
                 "ru": "Вечный город, богатый историей и культурой.",

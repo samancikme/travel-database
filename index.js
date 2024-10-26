@@ -1,4 +1,3 @@
-// File: server.js
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -8,25 +7,30 @@ const fs = require("fs");
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Middleware
 app.use(cors());
 app.use(bodyParser.json());
 
-// Secret key for JWT
 const SECRET_KEY = "your_secret_key";
 
-// JSON fayldan foydalanuvchi ma'lumotlarini olish
+
+
+
+
 function getUsers() {
   const data = fs.readFileSync("./users.json");
   return JSON.parse(data).users;
 }
 
-// JSON faylga foydalanuvchi ma'lumotlarini yozish
+
+
+
 function saveUsers(users) {
   fs.writeFileSync("./users.json", JSON.stringify({ users }, null, 2));
 }
 
-// JSON fayldan destination ma'lumotlarini olish
+
+
+
 function getDestinations() {
   try {
     const data = fs.readFileSync("./destinations.json");
@@ -37,7 +41,24 @@ function getDestinations() {
   }
 }
 
-// JSON fayldan offer ma'lumotlarini olish
+
+
+
+
+function saveDestinations(destinations) {
+  fs.writeFileSync(
+    "./destinations.json",
+    JSON.stringify({ destinations }, null, 2)
+  );
+}
+
+
+
+
+
+
+
+
 function getOffers() {
   try {
     const data = fs.readFileSync("./offers.json");
@@ -48,20 +69,21 @@ function getOffers() {
   }
 }
 
-// JSON faylga destination ma'lumotlarini yozish
-function saveDestinations(destinations) {
-  fs.writeFileSync(
-    "./destinations.json",
-    JSON.stringify({ destinations }, null, 2)
-  );
-}
 
-// JSON faylga offer ma'lumotlarini yozish
+
 function saveOffers(offers) {
   fs.writeFileSync("./offers.json", JSON.stringify({ offers }, null, 2));
 }
 
-// Helper function to create a slug from title
+
+
+
+
+
+
+
+
+
 function createSlug(title) {
   return title
     .toLowerCase()
@@ -206,7 +228,9 @@ app.get("/destinations", (req, res) => {
   const localizedDestinations = destinations.map(destination => {
     return {
       ...destination,
-      name: destination.name[lang] 
+      name: destination.name[lang],
+      country : destination.country[lang],
+      description: destination.description[lang],
     };
   });
 
@@ -237,7 +261,8 @@ app.get("/offers", (req, res) => {
   const localizedOffers = offers.map(offer => {
     return {
       ...offer,
-      title: offer.title[lang]
+      title: offer.title[lang],
+      details : offer.details[lang]
     };
   });
 
