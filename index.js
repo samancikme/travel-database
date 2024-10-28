@@ -1,4 +1,5 @@
 const express = require("express");
+const axios = require("axios");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const bcrypt = require("bcryptjs");
@@ -13,6 +14,23 @@ app.use(bodyParser.json());
 const SECRET_KEY = "your_secret_key";
 
 
+const TRANSLATE_API_KEY = "YOUR_YANDEX_API_KEY"; // Yandex Translate API kalitingiz
+
+async function translateText(text, lang) {
+  try {
+    const response = await axios.post(`https://translate.yandex.net/api/v1.5/tr.json/translate`, null, {
+      params: {
+        key: y0_AgAAAABy2vyMAATuwQAAAAEWRoM5AAACUqmpx6RM2Y93qDXij4uIWv_cOA,
+        text,
+        lang,
+      },
+    });
+    return response.data.text[0];
+  } catch (error) {
+    console.error("Tarjima qilishda xato:", error);
+    return text; // xato yuzaga kelsa asl matnni qaytaradi
+  }
+}
 
 
 
@@ -349,11 +367,10 @@ app.post("/destinations", authenticateToken, (req, res) => {
 
 
 
-app.put("/destinations/:id", authenticateToken, (req, res) => {
+app.put("/destinations/:id", authenticateToken, async (req, res) => {
   let destinations = getDestinations();
   const destinationId = parseInt(req.params.id);
   const { name, country, image, description } = req.body;
-  const slug = createSlug(name);
 
   const destinationIndex = destinations.findIndex(
     (destination) =>
@@ -365,28 +382,31 @@ app.put("/destinations/:id", authenticateToken, (req, res) => {
       .status(404)
       .json({ message: "Destination topilmadi yoki sizning emas" });
   }
+  const nameUz = await translateText(name, "en-uz");
+  const nameRu = await translateText(name, "en-ru");
+
+  const countryUz = await translateText(country, "en-uz");
+  const countryRu = await translateText(country, "en-ru");
+
+  const descriptionUz = await translateText(description, "en-uz");
+  const descriptionRu = await translateText(description, "en-ru");
 
   const updatedDestination = {
     ...destinations[destinationIndex],
-    name,
-    slug,
-    country,
     image,
-    description,
+    name: { en: name, uz: nameUz, ru: nameRu },
+    country: { en: country, uz: countryUz, ru: countryRu },
+    description: { en: description, uz: descriptionUz, ru: descriptionRu },
   };
 
   destinations[destinationIndex] = updatedDestination;
   saveDestinations(destinations);
 
-  res
-    .status(200)
-    .json({
-      message: "Destination muvaffaqiyatli yangilandi",
-      destination: updatedDestination,
-    });
+  res.status(200).json({
+    message: "Destination muvaffaqiyatli yangilandi",
+    destination: updatedDestination,
+  });
 });
-
-
 
 
 
