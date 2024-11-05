@@ -431,9 +431,7 @@ app.delete("/destinations/:id", authenticateToken, (req, res) => {
   const destinationId = parseInt(req.params.id);
 
   const destinationIndex = destinations.findIndex(
-    (destination) =>
-      destination.id === destinationId && destination.authorId === req.user.id
-  );
+    (destination) => destination.id === destinationId );
 
   if (destinationIndex === -1) {
     return res
@@ -512,9 +510,7 @@ app.put("/offers/:id", authenticateToken, (req, res) => {
   const { title, details, image, rating, price } = req.body;
   const slug = createSlug(title);
 
-  const offerIndex = offers.findIndex(
-    (offer) => offer.id === offerId && offer.CreatedUserId === req.user.id
-  );
+  const offerIndex = offers.findIndex((offer) => offer.id === offerId );
 
   if (offerIndex === -1) {
     return res
