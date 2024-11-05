@@ -740,7 +740,7 @@ app.get("/admin/dashboard", authenticateAdmin, (req, res) => {
 
 
 
-app.post("/book", (req, res) => {
+app.post("/book", authenticateToken, (req, res) => {
   const { name, email, phone, startDate, endDate, tourId } = req.body;
 
   const bookings = getBookings();
@@ -752,7 +752,8 @@ app.post("/book", (req, res) => {
     startDate,
     endDate,
     tourId,
-    status: "pending"
+    status: "pending",
+    userId: req.user.id, 
   };
 
   bookings.push(newBooking);
@@ -760,8 +761,6 @@ app.post("/book", (req, res) => {
   io.emit("new-booking", newBooking);
   res.status(201).json({ message: "Buyurtma qabul qilindi", booking: newBooking });
 });
-
-
 
 
 
