@@ -1,0 +1,35 @@
+{
+    "bookings": [
+      {
+        "id": 1,
+        "name": "Aliyev Davron",
+        "email": "davron@example.com",
+        "phone": "+998901234567",
+        "startDate": "2024-12-01",
+        "endDate": "2024-12-10",
+        "tourId": 101,
+        "status": "pending"
+      },
+      {
+        "id": 2,
+        "name": "Karimova Laylo",
+        "email": "laylo@example.com",
+        "phone": "+998901234568",
+        "startDate": "2024-12-05",
+        "endDate": "2024-12-15",
+        "tourId": 102,
+        "status": "approved"
+      },
+      {
+        "id": 3,
+        "name": "Nurmatov Aziz",
+        "email": "aziz@example.com",
+        "phone": "+998901234569",
+        "startDate": "2024-12-20",
+        "endDate": "2024-12-25",
+        "tourId": 103,
+        "status": "rejected"
+      }
+    ]
+  }
+  

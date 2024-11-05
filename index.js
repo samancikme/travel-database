@@ -7,30 +7,109 @@ const jwt = require("jsonwebtoken");
 const fs = require("fs");
 const app = express();
 const port = process.env.PORT || 3000;
+const http = require("http");
+const socketIo = require("socket.io");
+const server = http.createServer(app);
+const io = socketIo(server);
 
 app.use(cors());
 app.use(bodyParser.json());
 
+
+
+
 const SECRET_KEY = "your_secret_key";
+const SECRET_PASSWORD = "123456";
 
 
-const TRANSLATE_API_KEY = "YOUR_YANDEX_API_KEY"; // Yandex Translate API kalitingiz
 
-async function translateText(text, lang) {
+
+
+function getBookings() {
   try {
-    const response = await axios.post(`https://translate.yandex.net/api/v1.5/tr.json/translate`, null, {
-      params: {
-        key: y0_AgAAAABy2vyMAATuwQAAAAEWRoM5AAACUqmpx6RM2Y93qDXij4uIWv_cOA,
-        text,
-        lang,
-      },
-    });
-    return response.data.text[0];
+    const data = fs.readFileSync("./bookings.json");
+    return JSON.parse(data).bookings;
   } catch (error) {
-    console.error("Tarjima qilishda xato:", error);
-    return text; // xato yuzaga kelsa asl matnni qaytaradi
+    return [];
   }
 }
+
+function saveBookings(bookings) {
+  fs.writeFileSync("./bookings.json", JSON.stringify({ bookings }, null, 2));
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+app.post("/admin/login", (req, res) => {
+  const { password } = req.body;
+
+  const isValidPassword = bcrypt.compareSync(password, bcrypt.hashSync("123456", 10)); 
+  if (!isValidPassword) return res.status(401).json({ message: "Parol noto‘g‘ri" });
+
+  const token = jwt.sign({ admin: true }, SECRET_PASSWORD, { expiresIn: "1h" });
+  res.status(200).json({ message: "Admin muvaffaqiyatli kirdi", token });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function authenticateAdmin(req, res, next) {
+  const token = req.headers.authorization;
+  if (!token) return res.sendStatus(401);
+
+  jwt.verify(token.split(" ")[1], SECRET_PASSWORD, (err, decoded) => {
+    if (err) return res.sendStatus(403);
+    if (!decoded.admin) return res.sendStatus(403);
+    next();
+  });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -45,6 +124,24 @@ function getUsers() {
 function saveUsers(users) {
   fs.writeFileSync("./users.json", JSON.stringify({ users }, null, 2));
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -69,6 +166,28 @@ function saveDestinations(destinations) {
     JSON.stringify({ destinations }, null, 2)
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -578,6 +697,94 @@ app.delete("/offers/:id", authenticateToken, (req, res) => {
 
 
 
+
+
+
+
+
+
+
+io.on("connection", socket => {
+  console.log("Foydalanuvchi ulanmoqda");
+
+  socket.on("disconnect", () => {
+    console.log("Foydalanuvchi uzildi");
+  });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+app.get("/admin/dashboard", authenticateAdmin, (req, res) => {
+  const bookings = getBookings();
+  res.status(200).json({ bookings });
+});
+
+
+
+
+
+
+
+
+
+
+app.post("/book", (req, res) => {
+  const { name, email, phone, startDate, endDate, tourId } = req.body;
+
+  const bookings = getBookings();
+  const newBooking = {
+    id: bookings.length + 1,
+    name,
+    email,
+    phone,
+    startDate,
+    endDate,
+    tourId,
+    status: "pending"
+  };
+
+  bookings.push(newBooking);
+  saveBookings(bookings);
+  io.emit("new-booking", newBooking);
+  res.status(201).json({ message: "Buyurtma qabul qilindi", booking: newBooking });
+});
+
+
+
+
+
+
+
+
+
+app.put("/admin/bookings/:id", authenticateAdmin, (req, res) => {
+  const bookingId = parseInt(req.params.id);
+  const { status } = req.body;
+  let bookings = getBookings();
+
+  const bookingIndex = bookings.findIndex(booking => booking.id === bookingId);
+  if (bookingIndex === -1) return res.status(404).json({ message: "Buyurtma topilmadi" });
+
+  bookings[bookingIndex].status = status;
+  saveBookings(bookings);
+
+  // Real-time javob yuborish
+  io.emit("booking-status-update", { id: bookingId, status });
+
+  res.status(200).json({ message: `Buyurtma ${status} qilindi` });
+});
 
 
 
