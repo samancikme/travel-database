@@ -382,21 +382,13 @@ app.put("/destinations/:id", authenticateToken, async (req, res) => {
       .status(404)
       .json({ message: "Destination topilmadi yoki sizning emas" });
   }
-  const nameUz = await translateText(name, "en-uz");
-  const nameRu = await translateText(name, "en-ru");
-
-  const countryUz = await translateText(country, "en-uz");
-  const countryRu = await translateText(country, "en-ru");
-
-  const descriptionUz = await translateText(description, "en-uz");
-  const descriptionRu = await translateText(description, "en-ru");
-
+ 
   const updatedDestination = {
     ...destinations[destinationIndex],
     image,
-    name: { en: name, uz: nameUz, ru: nameRu },
-    country: { en: country, uz: countryUz, ru: countryRu },
-    description: { en: description, uz: descriptionUz, ru: descriptionRu },
+    name,
+    country,
+    description,
   };
 
   destinations[destinationIndex] = updatedDestination;
