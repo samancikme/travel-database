@@ -25,19 +25,23 @@ const SECRET_PASSWORD = "123456";
 
 
 
-function getBookings() {
+async function getBookings() {
   try {
-    const data = fs.readFileSync("./bookings.json");
+    const data = await fsPromises.readFile("./bookings.json");
     return JSON.parse(data).bookings;
   } catch (error) {
+    console.error("Error reading bookings.json", error);
     return [];
   }
 }
 
-function saveBookings(bookings) {
-  fs.writeFileSync("./bookings.json", JSON.stringify({ bookings }, null, 2));
+async function saveBookings(bookings) {
+  try {
+    await fsPromises.writeFile("./bookings.json", JSON.stringify({ bookings }, null, 2));
+  } catch (error) {
+    console.error("Error writing bookings.json", error);
+  }
 }
-
 
 
 
