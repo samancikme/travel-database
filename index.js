@@ -745,7 +745,7 @@ app.get("/admin/dashboard", authenticateAdmin, (req, res) => {
 
 
 app.post("/book", authenticateToken, (req, res) => {
-  const { name, email, phone, startDate, endDate, tourId } = req.body;
+  const { name, email, phone,  tourId } = req.body;
 
   const bookings = getBookings();
   const newBooking = {
@@ -753,8 +753,6 @@ app.post("/book", authenticateToken, (req, res) => {
     name,
     email,
     phone,
-    startDate,
-    endDate,
     tourId,
     status: "pending",
     userId: req.user.id, 
@@ -783,7 +781,6 @@ app.put("/admin/bookings/:id", authenticateAdmin, (req, res) => {
   bookings[bookingIndex].status = status;
   saveBookings(bookings);
 
-  // Real-time javob yuborish
   io.emit("booking-status-update", { id: bookingId, status });
 
   res.status(200).json({ message: `Buyurtma ${status} qilindi` });
