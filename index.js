@@ -37,12 +37,19 @@ async function getBookings() {
   }
 }
 
+
+
+
 async function saveBookings(bookings) {
   try {
-    await fsPromises.writeFile("./bookings.json", JSON.stringify({ bookings }, null, 2));
+    saveBookings(bookings); // Save updated bookings
+    io.emit("booking-status-update", { id: bookingId, status });
+    res.status(200).json({ message: `Buyurtma ${status} qilindi` });
   } catch (error) {
-    console.error("Error writing bookings.json", error);
+    console.error("Error saving bookings:", error);
+    res.status(500).json({ message: "Error saving bookings" });
   }
+  
 }
 
 
