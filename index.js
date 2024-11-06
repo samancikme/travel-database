@@ -11,6 +11,8 @@ const http = require("http");
 const socketIo = require("socket.io");
 const server = http.createServer(app);
 const io = socketIo(server);
+const fsPromises = require("fs/promises");
+
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -744,10 +746,12 @@ app.get("/admin/dashboard", authenticateAdmin, (req, res) => {
 
 
 
-app.post("/book", authenticateToken, (req, res) => {
-  const { name, email, phone,  tourId } = req.body;
 
-  const bookings = getBookings();
+
+app.post("/book", authenticateToken, async (req, res) => {
+  const { name, email, phone, tourId } = req.body;
+
+  const bookings = await getBookings();
   const newBooking = {
     id: bookings.length + 1,
     name,
@@ -755,12 +759,13 @@ app.post("/book", authenticateToken, (req, res) => {
     phone,
     tourId,
     status: "pending",
-    userId: req.user.id, 
+    userId: req.user.id,
   };
 
   bookings.push(newBooking);
-  saveBookings(bookings);
+  await saveBookings(bookings);
   io.emit("new-booking", newBooking);
+
   res.status(201).json({ message: "Buyurtma qabul qilindi", booking: newBooking });
 });
 
