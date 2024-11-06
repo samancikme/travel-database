@@ -778,21 +778,31 @@ app.post("/book", authenticateToken, async (req, res) => {
 app.put("/admin/bookings/:id", authenticateAdmin, (req, res) => {
   const bookingId = parseInt(req.params.id);
   const { status } = req.body;
-  let bookings = getBookings();
+  let bookings;
 
-  const bookingIndex = bookings.findIndex(booking => booking.id === bookingId);
-  if (bookingIndex === -1) return res.status(404).json({ message: "Buyurtma topilmadi" });
+  try {
+    bookings = getBookings(); // Call the function to get bookings
+  } catch (error) {
+    console.error("Error reading bookings:", error);
+    return res.status(500).json({ message: "Error reading bookings" });
+  }
+
+  const bookingIndex = bookings.findIndex((booking) => booking.id === bookingId);
+  if (bookingIndex === -1) {
+    return res.status(404).json({ message: "Buyurtma topilmadi" });
+  }
 
   bookings[bookingIndex].status = status;
-  saveBookings(bookings);
 
-  io.emit("booking-status-update", { id: bookingId, status });
-
-  res.status(200).json({ message: `Buyurtma ${status} qilindi` });
+  try {
+    saveBookings(bookings); // Save updated bookings
+    io.emit("booking-status-update", { id: bookingId, status });
+    res.status(200).json({ message: `Buyurtma ${status} qilindi` });
+  } catch (error) {
+    console.error("Error saving bookings:", error);
+    res.status(500).json({ message: "Error saving booking status" });
+  }
 });
-
-
-
 
 
 
